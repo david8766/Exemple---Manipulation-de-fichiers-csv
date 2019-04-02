@@ -7,9 +7,8 @@ $filePath = 'http://localhost/www/CSV/clients.csv';
 $file = file($filePath);
 // total de lignes du tableau
 $totalLigns = count($file);
-
-$LignsArr = [];
 // Retourne chaque ligne de chaines de caractères en tableau. 
+$LignsArr = [];
 for ($i=0; $i < $totalLigns ; $i++) { 
     $lignsArr[$i] = explode(";", $file[$i]);
 }
@@ -25,35 +24,28 @@ foreach ($lignsArr as $lign) {
 }
 echo "</tbody></table>";
 echo "<hr>";
+//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 echo "<h2>2 - Insérer les données du fichier CSV dans une base de données : <h2>";
-
 // Récupération des champs de la base.
 $fields = $lignsArr[0];
 $totalFields = count($fields);;
-
 // Suppression de la première ligne du tableau.
 unset($lignsArr[0]);
-
 // Réindexation du tableau.
 $customers = array_values($lignsArr);
-
 // Configuration de variables pour la connexion à la base de données.
 $dsn = 'mysql:host=localhost;port=3306;dbname=test_csv;charset=utf8';
 $user = 'root';
 $password = '';
-
-
 // Connexion à la base de données via PDO
 try {
     $db = new PDO($dsn,$user,$password);
 } catch (PDOExeption $e) {
     echo 'Connexion échouée : ' . $e->getMessage();
 }
-
 // Vérication da la table clients
 $stmt = $db->query("SELECT * FROM clients");
 $res= $stmt->fetchAll(PDO::FETCH_ASSOC);
-
 // Si la table client est vide on enregistre les données sinon on affiche les données.
 if(empty($res)){
     foreach ($customers as $customer) {
@@ -96,8 +88,8 @@ if(empty($res)){
     echo "</tbody></table>";
     echo "<hr>";
 }
-
 echo "<hr>";
+//------------------------------------------------------------------------------------------------------------------------------------------------------
 echo "<h2>3 - Ajouter une ligne dans la table et dans le fichier CSV : <h2>";
 $stmt = $db->query("SELECT * FROM clients WHERE id=101");
 $res= $stmt->fetch(PDO::FETCH_ASSOC);
@@ -109,12 +101,10 @@ if($res == false){
     $stmt = $db->prepare($sql);
     $insertIsOk = $stmt->execute();
     if($insertIsOk){
-        echo "Le client portant l'identifiant 101 a bien été ajouté dans la base de données: <br>";
-        
+        echo "Le client portant l'identifiant 101 a bien été ajouté dans la base de données: <br>";   
         // Ajout du client n°101 dans le fichier CSV.
         $stmt = $db->query("SELECT * FROM clients WHERE id=101");
         $res = $stmt->fetch(PDO::FETCH_ASSOC);
-
         // Afficher les données dans un tableau.
         echo '<table border=1>';
         echo "<tbody>";
@@ -141,9 +131,6 @@ if($res == false){
 }else{
     echo "Le client n°101 a déjà été ajouté dans la base de données<br>";
 }
-
-
-
 $stmt = $db->query("SELECT * FROM clients WHERE id=102");
 $res= $stmt->fetch(PDO::FETCH_ASSOC);
 // Si le client n°102 existe j'informe l'utilisateur sinon je l'enregistre dans la base de donnée et le fichier CSV.
@@ -158,8 +145,6 @@ if($res == false){
         // Ajout du client n°102 dnas le fichier CSV.
         $stmt = $db->query("SELECT * FROM clients WHERE id=102");
         $res = $stmt->fetch(PDO::FETCH_ASSOC);
-        
-        // Afficher les données dans un tableau.
         // Afficher les données dans un tableau.
         echo '<table border=1>';
         echo "<tbody>";
@@ -174,8 +159,7 @@ if($res == false){
         }
         echo "</tr>";
         echo "</tbody></table>";
-        echo '<br>';
-       
+        echo '<br>'
         // Insérer les données dans une nouvelle ligne dans le fichier CSV
         $data = implode(';',$res);
         $data = $data . PHP_EOL;
@@ -186,12 +170,10 @@ if($res == false){
 }else{
     echo "Le client n°102 a déjà été ajouté dans la base de données<br>";
 }
-
 echo "<hr>";
+//---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 echo "<h2>4 - Supprimer une ligne dans la table et dans le fichier CSV : <h2>";
-
 // Suppression du client n°101:
-
 // Récupération des données de ce client.
 $stmt = $db->query("SELECT * FROM clients WHERE id=101");
 $res = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -200,7 +182,6 @@ $data = $data . PHP_EOL;
 // Suppression des donées dans la base de données.
 $sql = 'DELETE FROM `clients` WHERE id = 101';
 $deleteIsOk = $db->query($sql);
-
 // Réécriture du fichier en supprimant la ligne correspondate aux données de ce client.
 $file = file($filePath);
 foreach($file as $num => $lign){  
@@ -212,22 +193,17 @@ foreach($file as $num => $lign){
         echo "Le client n°101 a bien été supprimé de la base de données et du fichier CSV.";   
     }     
 }
-
 echo "<hr>";
 echo "<h2>5 - Modifier une ligne dans la table et dans le fichier CSV : <h2>";
-
 // Modification du client n°102:
-
 // Récupération des données de ce client avant la mise à jour.
 $stmt = $db->query("SELECT * FROM clients WHERE id=102");
 $res = $stmt->fetch(PDO::FETCH_ASSOC);
 $data = implode(';',$res);
 $data = $data . PHP_EOL;
-
+// Mettre à jour l'email du client
 $stmt = $db->query("SELECT `email` FROM clients WHERE id=102");
 $res = $stmt->fetch(PDO::FETCH_ASSOC);
-//var_dump($stmt);
-
 $email = "JhonSmith@gmail.com";
 if($res['email'] != $email){
     // Mise à jour des données du client dans la base de données
@@ -260,5 +236,4 @@ if($res['email'] != $email){
 }else{
     echo "modifier l'email pour l'enregistrer";
 }
-
 ?>
