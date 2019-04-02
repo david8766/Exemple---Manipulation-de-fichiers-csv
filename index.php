@@ -60,7 +60,6 @@ if(empty($res)){
         $statement->bindValue(':adresse',$customer[5]);
         $statement->bindValue(':ville',$customer[6]);
         $statement->bindValue(':code_postal',$customer[7]);
-        
         $insertIsOk = $statement->execute();
         if($insertIsOk){
             $message = "Le client portant l'identifiant n°" . $customer[0] . ' a bien été enregistrée dans la base de données.';
@@ -126,8 +125,7 @@ if($res == false){
         $insertInCSV = file_put_contents('clients.csv',$data,FILE_APPEND);
     }else{
         echo "Erreur lors de l'insertion dans la base de données.";
-    }
-    
+    }    
 }else{
     echo "Le client n°101 a déjà été ajouté dans la base de données<br>";
 }
