@@ -40,8 +40,8 @@ $password = '';
 // Connexion à la base de données via PDO
 try {
     $db = new PDO($dsn,$user,$password);
-} catch (PDOExeption $e) {
-    echo 'Connexion échouée : ' . $e->getMessage();
+} catch (PDOException $e) {
+    die('Connexion échouée : ' . $e->getMessage());
 }
 // Vérication da la table clients
 $stmt = $db->query("SELECT * FROM clients");
