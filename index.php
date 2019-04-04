@@ -40,6 +40,7 @@ $password = '';
 // Connexion à la base de données via PDO
 try {
     $db = new PDO($dsn,$user,$password);
+    $db->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
     die('Connexion échouée : ' . $e->getMessage());
 }
